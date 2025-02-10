@@ -204,6 +204,8 @@ body {
     font-size: 1rem;
     position: relative; /* Para posicionar la hora */
     box-sizing: border-box;
+    cursor: pointer; 
+    user-select: text;
 }
 
 .messages .message-sent {
