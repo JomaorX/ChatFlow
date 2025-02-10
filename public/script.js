@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Guardar el token en localStorage
                 localStorage.setItem('token', data.token);
                 alert("Inicio de sesión exitoso");
-                window.location.href = "/chat";
+                window.location.href = "/login";
             } else {
                 alert(data.message);
             }
