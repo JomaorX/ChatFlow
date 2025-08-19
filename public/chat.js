@@ -152,21 +152,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Funcionalidad para el botón de alternar el sidebar
-    toggleSidebarBtn.addEventListener('click', () => {
+toggleSidebarBtn.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+        // MODO MÓVIL → usamos "active"
         sidebar.classList.toggle('active');
-    });
+    } else {
+        // MODO ESCRITORIO → usamos "collapsed"
+        sidebar.classList.toggle('collapsed');
+    }
+});
 
 
-    // Cierra el sidebar al hacer clic fuera de él
-    document.addEventListener('click', (e) => {
-        // Comprueba si el clic fue fuera del sidebar y no en el botón de alternar
+    // Cierra el sidebar al hacer clic fuera de él (solo en móvil)
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
         if (!sidebar.contains(e.target) && !toggleSidebarBtn.contains(e.target)) {
-            // Asegúrate de que el sidebar esté activo antes de intentar cerrarlo
             if (sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
             }
         }
-    });
+    }
+});
 
     // Cerrar sesión
     window.logout = () => {

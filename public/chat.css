@@ -5,10 +5,7 @@
     box-sizing: border-box;
 }
 
-/* * CAMBIO CLAVE:
- * El BODY ahora es un contenedor Flexbox principal que organizará el sidebar y el chat.
- * Por defecto, en escritorio, se alinearán en una fila.
-*/
+/* Contenedor principal */
 html, body {
     height: 100%;
     font-family: Arial, sans-serif;
@@ -16,15 +13,11 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100vh;
     overflow: hidden; 
     display: flex;
 }
 
-/*
- * CAMBIO CLAVE:
- * El 'chat-container' ocupará el espacio restante.
-*/
+/* Chat container */
 .chat-container {
     display: flex;
     flex-direction: column;
@@ -38,17 +31,12 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
     backdrop-filter: blur(10px);
-    transition: margin-left 0.3s ease-in-out; /* Añade una transición para el margen */
+    transition: margin-left 0.3s ease-in-out;
 }
 
-/*
- * CAMBIO CLAVE:
- * El 'sidebar-dropdown' ahora usa la clase 'active' para cambiar su estado.
- * Por defecto, en escritorio, no tendrá la clase 'active', por lo tanto,
- * usará los estilos que lo hacen visible.
-*/
+/* === SIDEBAR ESCRITORIO === */
 .sidebar-dropdown {
-    width: 280px; /* Ancho por defecto en escritorio */
+    width: 280px;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.671);
     backdrop-filter: blur(10px);
@@ -59,23 +47,24 @@ html, body {
     overflow-y: auto;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease-in-out; /* Transición para cambios de tamaño */
+    transition: all 0.3s ease-in-out;
     z-index: 1000;
 }
 
-/* Estilos para el sidebar cuando está cerrado en escritorio */
-.sidebar-dropdown.active {
+/* Sidebar colapsado en escritorio */
+.sidebar-dropdown.collapsed {
     width: 0;
-    min-width: 0; /* Asegura que no ocupe espacio mínimo */
+    min-width: 0;
     padding: 0;
     border: none;
     box-shadow: none;
-    opacity: 0; /* Opcional, para ocultar su contenido */
+    opacity: 0;
 }
 
-/* Estilos para el chat cuando el sidebar está cerrado */
+
+/* Chat expandido si sidebar colapsa */
 body .chat-container.sidebar-collapsed {
-    margin-left: 0; /* Si el sidebar está colapsado, el chat ocupa el espacio */
+    margin-left: 0;
 }
 
 .dropdown-header {
@@ -125,6 +114,7 @@ body .chat-container.sidebar-collapsed {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
+/* === CHAT MAIN === */
 .chat-main {
     flex-grow: 1;
     display: flex;
@@ -139,10 +129,9 @@ body .chat-container.sidebar-collapsed {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-    padding: 0 10px;
+    padding: 15px 10px;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    padding: 15px;
 }
 
 .sidebar-toggle-btn, .logout-btn {
@@ -178,6 +167,7 @@ body .chat-container.sidebar-collapsed {
     margin: 0 auto;
 }
 
+/* === MENSAJES === */
 .messages {
     flex-grow: 1;
     overflow-y: auto;
@@ -256,6 +246,7 @@ body .chat-container.sidebar-collapsed {
     margin-left: 20px;
 }
 
+/* === FOOTER === */
 .chat-footer {
     display: flex;
     gap: 10px;
@@ -312,37 +303,40 @@ body .chat-container.sidebar-collapsed {
     background-color: #c82333;
 }
 
-/* * CAMBIO CLAVE EN MEDIA QUERIES:
- * Revertimos el comportamiento Flexbox para la vista de móvil y
- * manejamos la clase 'active'.
-*/
+/* === MEDIA QUERIES (MÓVIL) === */
 @media (max-width: 768px) {
-    /* El body ahora apila los elementos en una columna */
     body {
         flex-direction: column;
     }
 
-    /* El 'sidebar-dropdown' vuelve a ser 'fixed' y se oculta con 'left' */
+    /* Sidebar en móvil → oculto con left */
     .sidebar-dropdown {
         position: fixed;
+        top: 0;
         left: -100%;
         width: 80%;
-        transition: left 0.3s ease-in-out;
-        /* Reseteamos los estilos de escritorio */
-        min-width: unset; 
+        height: 100%;
+        padding: 20px;
         opacity: 1;
+        border-right: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        transition: left 0.3s ease-in-out;
     }
 
-    /* La clase 'active' para móviles */
     .sidebar-dropdown.active {
         left: 0;
+    }
+
+    /* ignoramos collapsed en móvil */
+    .sidebar-dropdown.collapsed {
+        width: 80%;
+        opacity: 1;
     }
 
     .sidebar-toggle-btn {
         display: block;
     }
 
-    /* Ocultamos la clase 'sidebar-collapsed' en móvil, ya que no se usa */
     .chat-container.sidebar-collapsed {
         margin-left: 0;
         width: 100%;
