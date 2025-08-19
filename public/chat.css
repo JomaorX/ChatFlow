@@ -6,7 +6,13 @@
     box-sizing: border-box;
 }
 
-body {
+/* Cambios clave aquí:
+   - Se elimina min-height: 100vh; del body.
+   - Se añade height: 100%; al html y body para que el contenedor principal
+     pueda ocupar el 100% del espacio disponible.
+*/
+html, body {
+    height: 100%;
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #30d5c8, #1a237e);
     margin: 0;
@@ -15,34 +21,38 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 100vh;
     overflow: hidden; 
 }
 
 /* Contenedor principal del chat */
+/* Se ha cambiado height: 100vh; por height: 100%;
+   Esto permite que el contenedor se ajuste a la altura real del body,
+   resolviendo el problema del footer en móviles.
+*/
 .chat-container {
     display: flex;
+    flex-direction: column; /* Añadido para usar Flexbox y organizar el contenido verticalmente */
     width: 100%;
     max-width: none;
-    height: 100vh;
+    height: 100%; 
     border-radius: 0;
     box-shadow: none;
     overflow: hidden;
-    /* Reducción del tamaño del fondo para que no se vea tan grande */
     background-image: url('./imagenes/chatflowbocadillo.webp');
-    background-size: 400px; /* O el tamaño que prefieras */
+    background-size: 400px;
     background-position: center;
     background-repeat: no-repeat;
     backdrop-filter: blur(10px);
 }
 
 /* Sidebar: Menú desplegable */
+/* Se ha cambiado height: 100vh; por height: 100% para consistencia */
 .sidebar-dropdown {
     position: fixed;
     top: 0;
-    left: -320px; /* Incrementamos el valor para que se oculte por completo */
+    left: -320px;
     width: 280px;
-    height: 100vh;
+    height: 100%;
     background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     padding: 20px;
@@ -57,7 +67,7 @@ body {
 }
 
 .sidebar-dropdown.active {
-    left: 0; /* Visible al activarse */
+    left: 0;
 }
 
 .dropdown-header {
@@ -108,6 +118,8 @@ body {
 }
 
 /* Área principal del chat */
+/* Se eliminó la propiedad 'width: 100%' para que no sobrescriba el 'flex-grow' del contenedor.
+   Esto permite que el main ocupe el espacio flexible dentro del chat-container. */
 .chat-main {
     flex-grow: 1;
     display: flex;
@@ -115,7 +127,6 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
     padding: 20px;
     overflow: hidden;
-    width: 100%;
 }
 
 /* Encabezado del chat */
@@ -125,7 +136,6 @@ body {
     align-items: center;
     margin-bottom: 15px;
     padding: 0 10px;
-    /* Nuevo estilo para que el header destaque más */
     background: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     padding: 15px;
@@ -133,7 +143,7 @@ body {
 
 /* Botones de la cabecera (Menú y Cerrar Sesión) */
 .sidebar-toggle-btn, .logout-btn {
-    background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente para que destaquen */
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 8px;
     padding: 8px 12px;
@@ -162,6 +172,8 @@ body {
 }
 
 /* Contenedor de mensajes y pie de página */
+/* flex-grow: 1; es la propiedad clave para que el contenedor
+   de mensajes ocupe todo el espacio sobrante entre el header y el footer. */
 .messages {
     flex-grow: 1;
     overflow-y: auto;
@@ -259,23 +271,24 @@ fill: white;
 /* --- Media Queries --- */
 @media (max-width: 768px) {
     .chat-container {
-        flex-direction: column;
-        height: 100vh;
+        /* Se ha eliminado height: 100vh; de nuevo para evitar problemas. */
+        height: 100%;
     }
 
     .sidebar-dropdown {
-        left: -100%; /* Ajuste para ocultar completamente en móvil */
+        left: -100%;
         width: 80%;
-        height: 100vh;
+        height: 100%; /* Cambiado a 100% para consistencia */
     }
 
     .sidebar-dropdown.active {
         left: 0;
     }
 
+    /* Se ha eliminado height: 100%; del chat-main para que Flexbox
+       pueda controlar la altura automáticamente. */
     .chat-main {
         width: 100%;
-        height: 100%;
         padding: 10px;
     }
 
