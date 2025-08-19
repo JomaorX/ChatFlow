@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Mostrar nombre del usuario
     const user = JSON.parse(atob(token.split(".")[1]));
-    usernameSpan.textContent = user.username;
+    usernameSpan.textContent = `${user.username}👤`;
 
     let selectedUser = null; // Usuario seleccionado para chat privado
     const conversations = {};
@@ -131,12 +131,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (clickedUser === "Chat Global") {
                 selectedUser = null;
-                chatTitle.textContent = "🚀Chat Global🌍";
+                chatTitle.textContent = "Chat Global 🌍";
                 const conversationKey = "Chat Global";
                 renderMessages(conversationKey);
             } else {
                 selectedUser = clickedUser;
-                chatTitle.textContent = `🗣️${selectedUser}`;
+                chatTitle.textContent = `${selectedUser} 👤`;
 
                 const conversationKey = `${user.username}-${selectedUser}`;
                 if (!conversations[conversationKey]) {

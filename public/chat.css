@@ -1,15 +1,13 @@
 /* Estilos generales */
-
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
-/* Cambios clave aquí:
-   - Se elimina min-height: 100vh; del body.
-   - Se añade height: 100%; al html y body para que el contenedor principal
-     pueda ocupar el 100% del espacio disponible.
+/* * CAMBIO CLAVE:
+ * El BODY ahora es un contenedor Flexbox principal que organizará el sidebar y el chat.
+ * Por defecto, en escritorio, se alinearán en una fila.
 */
 html, body {
     height: 100%;
@@ -17,23 +15,20 @@ html, body {
     background: linear-gradient(to right, #30d5c8, #1a237e);
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 100%;
+    min-height: 100vh;
     overflow: hidden; 
+    display: flex;
 }
 
-/* Contenedor principal del chat */
-/* Se ha cambiado height: 100vh; por height: 100%;
-   Esto permite que el contenedor se ajuste a la altura real del body,
-   resolviendo el problema del footer en móviles.
+/*
+ * CAMBIO CLAVE:
+ * El 'chat-container' ocupará el espacio restante.
 */
 .chat-container {
     display: flex;
-    flex-direction: column; /* Añadido para usar Flexbox y organizar el contenido verticalmente */
-    width: 100%;
-    max-width: none;
+    flex-direction: column;
+    flex-grow: 1; 
     height: 100%; 
     border-radius: 0;
     box-shadow: none;
@@ -43,17 +38,19 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
     backdrop-filter: blur(10px);
+    transition: margin-left 0.3s ease-in-out; /* Añade una transición para el margen */
 }
 
-/* Sidebar: Menú desplegable */
-/* Se ha cambiado height: 100vh; por height: 100% para consistencia */
+/*
+ * CAMBIO CLAVE:
+ * El 'sidebar-dropdown' ahora usa la clase 'active' para cambiar su estado.
+ * Por defecto, en escritorio, no tendrá la clase 'active', por lo tanto,
+ * usará los estilos que lo hacen visible.
+*/
 .sidebar-dropdown {
-    position: fixed;
-    top: 0;
-    left: -320px;
-    width: 280px;
+    width: 280px; /* Ancho por defecto en escritorio */
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.671);
     backdrop-filter: blur(10px);
     padding: 20px;
     display: flex;
@@ -62,12 +59,23 @@ html, body {
     overflow-y: auto;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    transition: left 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out; /* Transición para cambios de tamaño */
     z-index: 1000;
 }
 
+/* Estilos para el sidebar cuando está cerrado en escritorio */
 .sidebar-dropdown.active {
-    left: 0;
+    width: 0;
+    min-width: 0; /* Asegura que no ocupe espacio mínimo */
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    opacity: 0; /* Opcional, para ocultar su contenido */
+}
+
+/* Estilos para el chat cuando el sidebar está cerrado */
+body .chat-container.sidebar-collapsed {
+    margin-left: 0; /* Si el sidebar está colapsado, el chat ocupa el espacio */
 }
 
 .dropdown-header {
@@ -117,9 +125,6 @@ html, body {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Área principal del chat */
-/* Se eliminó la propiedad 'width: 100%' para que no sobrescriba el 'flex-grow' del contenedor.
-   Esto permite que el main ocupe el espacio flexible dentro del chat-container. */
 .chat-main {
     flex-grow: 1;
     display: flex;
@@ -129,7 +134,6 @@ html, body {
     overflow: hidden;
 }
 
-/* Encabezado del chat */
 .chat-header {
     display: flex;
     justify-content: space-between;
@@ -141,7 +145,6 @@ html, body {
     padding: 15px;
 }
 
-/* Botones de la cabecera (Menú y Cerrar Sesión) */
 .sidebar-toggle-btn, .logout-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
@@ -151,6 +154,9 @@ html, body {
     cursor: pointer;
     font-size: 1.5rem;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sidebar-toggle-btn:hover, .logout-btn:hover {
@@ -162,6 +168,7 @@ html, body {
     width: 24px;
     height: 24px;
     fill: #fff;
+    display: block; 
 }
 
 .chat-header h2 {
@@ -171,9 +178,6 @@ html, body {
     margin: 0 auto;
 }
 
-/* Contenedor de mensajes y pie de página */
-/* flex-grow: 1; es la propiedad clave para que el contenedor
-   de mensajes ocupe todo el espacio sobrante entre el header y el footer. */
 .messages {
     flex-grow: 1;
     overflow-y: auto;
@@ -185,7 +189,7 @@ html, body {
 
 .messages p {
     margin: 0;
-    padding: 12px 24px 12px 12px;
+    padding: 12px;
     border-radius: 8px;
     max-width: 80%;
     word-wrap: break-word;
@@ -195,29 +199,61 @@ html, body {
     position: relative;
     box-sizing: border-box;
     cursor: pointer;
-    user-select: text;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .messages .message-sent {
     background-color: #dcf8c6;
     align-self: flex-end;
     color: #000;
+    border-radius: 8px 0 8px 8px; 
+}
+
+.messages .message-sent::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -7px;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: #dcf8c6;
+    border-left-color: #dcf8c6;
+    border-right-color: transparent;
+    border-top-left-radius: 10px;
 }
 
 .messages .message-received {
     background-color: #f0f0f0;
     align-self: flex-start;
     color: #000;
+    border-radius: 0 8px 8px 8px;
+}
+
+.messages .message-received::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -7px;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: #f0f0f0;
+    border-right-color: #f0f0f0;
+    border-left-color: transparent;
+    border-top-right-radius: 10px;
 }
 
 .messages p .time {
-    padding-left: 20px;
+    cursor: default; 
+    user-select: none;
     font-size: 0.8rem;
     color: #666;
-    margin-left: 5px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
+    align-self: flex-end;
+    margin-top: 5px;
+    margin-left: 20px;
 }
 
 .chat-footer {
@@ -259,37 +295,63 @@ html, body {
     font-size: 1rem;
 }
 .chat-footer button svg {
-width: 24px;
-height: 24px;
-fill: white;
+    width: 24px;
+    height: 24px;
+    fill: white;
 }
 
 .chat-footer button:hover {
     background-color: #1a237e;
 }
 
-/* --- Media Queries --- */
+.logout-btn {
+    background: #dc3545;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}
+
+/* * CAMBIO CLAVE EN MEDIA QUERIES:
+ * Revertimos el comportamiento Flexbox para la vista de móvil y
+ * manejamos la clase 'active'.
+*/
 @media (max-width: 768px) {
-    .chat-container {
-        /* Se ha eliminado height: 100vh; de nuevo para evitar problemas. */
-        height: 100%;
+    /* El body ahora apila los elementos en una columna */
+    body {
+        flex-direction: column;
     }
 
+    /* El 'sidebar-dropdown' vuelve a ser 'fixed' y se oculta con 'left' */
     .sidebar-dropdown {
+        position: fixed;
         left: -100%;
         width: 80%;
-        height: 100%; /* Cambiado a 100% para consistencia */
+        transition: left 0.3s ease-in-out;
+        /* Reseteamos los estilos de escritorio */
+        min-width: unset; 
+        opacity: 1;
     }
 
+    /* La clase 'active' para móviles */
     .sidebar-dropdown.active {
         left: 0;
     }
 
-    /* Se ha eliminado height: 100%; del chat-main para que Flexbox
-       pueda controlar la altura automáticamente. */
-    .chat-main {
+    .sidebar-toggle-btn {
+        display: block;
+    }
+
+    /* Ocultamos la clase 'sidebar-collapsed' en móvil, ya que no se usa */
+    .chat-container.sidebar-collapsed {
+        margin-left: 0;
         width: 100%;
-        padding: 10px;
+    }
+    
+    .chat-container {
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
     }
 
     .chat-header h2 {
