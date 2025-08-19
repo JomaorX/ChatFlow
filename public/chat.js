@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageForm = document.getElementById("message-form");
     const messageInput = document.getElementById("message-input");
     const chatTitle = document.getElementById("chat-title");
+    const toggleSidebarBtn = document.getElementById("toggle-sidebar"); // Nuevo botón
+    const sidebar = document.getElementById("sidebar"); // Nuevo elemento del sidebar
 
     // Leer el token de localStorage
     const token = localStorage.getItem('token');
@@ -22,29 +24,28 @@ document.addEventListener("DOMContentLoaded", () => {
     usernameSpan.textContent = user.username;
 
     let selectedUser = null; // Usuario seleccionado para chat privado
-
-    // Objeto para almacenar mensajes por conversación
     const conversations = {};
 
     // Función para renderizar los mensajes de una conversación
     const renderMessages = (conversationKey) => {
         messagesContainer.innerHTML = '';
         conversations[conversationKey]?.forEach(msg => addMessage(msg));
+        // Desplazar al final de los mensajes después de renderizar
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     };
 
     // Función para agregar un mensaje al contenedor
     const addMessage = (data) => {
         const p = document.createElement('p');
-
         let messageText;
 
         if (data.type === 'private') {
             if (data.sender === user.username) {
                 messageText = `${data.text}`;
-                p.className = 'message-sent'; // Alinear a la derecha
+                p.className = 'message-sent';
             } else {
                 messageText = `${data.text}`;
-                p.className = 'message-received'; // Alinear a la izquierda
+                p.className = 'message-received';
             }
         } else if (data.type === 'public') {
             if (data.user === user.username) {
@@ -56,22 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-
-        // Crear el span para la hora
         const timeSpan = document.createElement('span');
         timeSpan.className = 'time';
         timeSpan.textContent = `${data.time}`;
 
         p.textContent = messageText;
         p.appendChild(timeSpan);
-        messagesContainer.appendChild(p);
-        // Agregar el mensaje al INICIO del contenedor
         messagesContainer.prepend(p);
-
-        // Desplazamiento automático inteligente
-        if (messagesContainer.scrollHeight - messagesContainer.scrollTop === messagesContainer.clientHeight) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
     };
 
     // Escuchar lista de usuarios
@@ -83,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Escuchar mensajes
     socket.on('message', (data) => {
         let conversationKey;
-
         if (data.type === 'private') {
             conversationKey = `${data.sender}-${data.recipient}`;
         } else {
@@ -98,9 +89,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (
             (conversationKey === "Chat Global" && !selectedUser) ||
-            (conversationKey !== "Chat Global" && conversationKey.includes(selectedUser))
+            (conversationKey.includes(selectedUser) || conversationKey.includes(user.username))
         ) {
             addMessage(data);
+        }
+
+        // Si la conversación actual es la activa, desplaza hacia abajo
+        if (messagesContainer.scrollHeight - messagesContainer.scrollTop < 1000) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     });
 
@@ -119,12 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("El mensaje no puede estar vacío.");
             return;
         }
-
+        
         if (selectedUser && selectedUser !== "Chat Global") {
-            // Chat privado
             socket.emit('private message', { recipient: selectedUser, text: message });
         } else {
-            // Chat global
             socket.emit('public message', message);
         }
         messageInput.value = '';
@@ -138,21 +132,28 @@ document.addEventListener("DOMContentLoaded", () => {
             if (clickedUser === "Chat Global") {
                 selectedUser = null;
                 chatTitle.textContent = "🚀Chat Global🌍";
+                const conversationKey = "Chat Global";
+                renderMessages(conversationKey);
             } else {
                 selectedUser = clickedUser;
                 chatTitle.textContent = `🗣️${selectedUser}`;
 
-                // Cargar historial de mensajes privados
                 const conversationKey = `${user.username}-${selectedUser}`;
                 if (!conversations[conversationKey]) {
                     conversations[conversationKey] = [];
                     socket.emit('load private messages', { recipient: selectedUser });
+                } else {
+                    renderMessages(conversationKey);
                 }
             }
-
-            const conversationKey = selectedUser ? `${user.username}-${selectedUser}` : "Chat Global";
-            renderMessages(conversationKey);
+            // Oculta el sidebar después de seleccionar un chat
+            sidebar.classList.remove('active');
         }
+    });
+    
+    // Funcionalidad para el botón de alternar el sidebar
+    toggleSidebarBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
     });
 
     // Cerrar sesión

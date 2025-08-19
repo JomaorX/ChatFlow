@@ -11,21 +11,20 @@
 </head>
 <body>
     <div class="chat-container">
-        <!-- Sidebar: Lista de Usuarios -->
-        <aside class="sidebar">
-            <a href="https://github.com/JomaorX/ChatFlow" title="Ir a GitHub" target="_blank"><img src="./imagenes/chatflowLPeque.webp" alt="logo chatflow"></a>
-            <header class="sidebar-header">
-                <p id="username"></p>
-                <button onclick="logout()">Cerrar Sesión</button>
-            </header>
-            <h2>Usuarios Conectados</h2>
-            <ul id="users-list"></ul>
-        </aside>
-
-        <!-- Área Principal del Chat -->
         <main class="chat-main">
             <header class="chat-header">
+                <button id="toggle-sidebar" class="sidebar-toggle-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                </button>
                 <h2 id="chat-title">🚀Chat Global🌍</h2>
+                <button onclick="logout()" class="logout-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 1 0v-3A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-3a.5.5 0 0 0-1 0v3z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354l-4-4a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708z"/>
+                    </svg>
+                </button>
             </header>
             <section class="messages" id="messages"></section>
             <footer class="chat-footer">
@@ -36,5 +35,15 @@
             </footer>
         </main>
     </div>
+    
+    <aside class="sidebar-dropdown" id="sidebar">
+        <header class="dropdown-header">
+            <a href="https://github.com/JomaorX/ChatFlow" title="Ir a GitHub" target="_blank">
+                <img src="./imagenes/chatflowLPeque.webp" alt="logo chatflow">
+            </a>
+            <p id="username"></p>
+        </header>
+        <ul id="users-list"></ul>
+    </aside>
 </body>
 </html>
