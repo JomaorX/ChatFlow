@@ -1,4 +1,11 @@
 /* Estilos generales */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #30d5c8, #1a237e);
@@ -7,6 +14,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
     min-height: 100vh;
     overflow: hidden; 
 }
@@ -22,7 +30,7 @@ body {
     overflow: hidden;
     /* Reducción del tamaño del fondo para que no se vea tan grande */
     background-image: url('./imagenes/chatflowbocadillo.webp');
-    background-size: 70%; /* Reducimos el tamaño de la imagen */
+    background-size: 400px; /* O el tamaño que prefieras */
     background-position: center;
     background-repeat: no-repeat;
     backdrop-filter: blur(10px);
@@ -216,7 +224,7 @@ body {
     flex-grow: 1;
     padding: 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 8px 0 0 8px;
     background-color: rgba(255, 255, 255, 0.8);
     color: #333;
     font-size: 1rem;
@@ -233,23 +241,19 @@ body {
     background-color: #30d5c8;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 0 8px 8px 0;
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-size: 1rem;
 }
+.chat-footer button svg {
+width: 24px;
+height: 24px;
+fill: white;
+}
 
 .chat-footer button:hover {
     background-color: #1a237e;
-}
-
-/* Ocultar la barra de scroll */
-.messages::-webkit-scrollbar {
-    display: none;
-}
-
-.messages {
-    scrollbar-width: none;
 }
 
 /* --- Media Queries --- */

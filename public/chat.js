@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("El mensaje no puede estar vacío.");
             return;
         }
-        
+
         if (selectedUser && selectedUser !== "Chat Global") {
             socket.emit('private message', { recipient: selectedUser, text: message });
         } else {
@@ -150,10 +150,22 @@ document.addEventListener("DOMContentLoaded", () => {
             sidebar.classList.remove('active');
         }
     });
-    
+
     // Funcionalidad para el botón de alternar el sidebar
     toggleSidebarBtn.addEventListener('click', () => {
         sidebar.classList.toggle('active');
+    });
+
+
+    // Cierra el sidebar al hacer clic fuera de él
+    document.addEventListener('click', (e) => {
+        // Comprueba si el clic fue fuera del sidebar y no en el botón de alternar
+        if (!sidebar.contains(e.target) && !toggleSidebarBtn.contains(e.target)) {
+            // Asegúrate de que el sidebar esté activo antes de intentar cerrarlo
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        }
     });
 
     // Cerrar sesión
